@@ -1,4 +1,5 @@
 paramiko
+pysocks
 tornado
 webssh
 #wireproxy

@@ -451,8 +451,28 @@ class IndexHandler(MixinHandler, tornado.web.RequestHandler):
         dst_addr = args[:2]
         logging.info('Connecting to {}:{}'.format(*dst_addr))
 
+        # Build proxy socket if proxy settings are supplied
+        proxy_sock = None
+        ptype = (getattr(options, 'proxy_type', '') or getattr(options, 'proxytype', '')).lower()
+        phost = getattr(options, 'proxy_host', '') or getattr(options, 'proxyhost', '')
+        pport = getattr(options, 'proxy_port', 0) or getattr(options, 'proxyport', 0)
+        if ptype and phost and pport:
+            if ptype in ('socks5', 'socks', 'socks5h'):
+                try:
+                    import socks  # PySocks
+                    proxy_sock = socks.socksocket()
+                    proxy_sock.set_proxy(socks.SOCKS5, phost, int(pport))
+                    proxy_sock.settimeout(options.timeout)
+                    proxy_sock.connect(dst_addr)
+                    logging.info('Connected to %s via SOCKS5 proxy %s:%s', dst_addr, phost, pport)
+                except Exception as exc:
+                    logging.warning('Failed to connect via SOCKS5 proxy: %s', exc)
+
         try:
-            ssh.connect(*args, timeout=options.timeout)
+            if proxy_sock is not None:
+                ssh.connect(*args, timeout=options.timeout, sock=proxy_sock)
+            else:
+                ssh.connect(*args, timeout=options.timeout)
         except socket.error:
             raise ValueError('Unable to connect to {}:{}'.format(*dst_addr))
         except paramiko.BadAuthenticationType:
