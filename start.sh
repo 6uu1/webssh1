@@ -15,6 +15,6 @@ exec python run.py \
   --port=${PORT:-8888} \
   --address=0.0.0.0 \
   --xheaders=False \
-  --proxytype=socks5 \
-  --proxyhost=127.0.0.1 \
-  --proxyport=1080
+  --proxy_type=socks5 \
+  --proxy_host=127.0.0.1 \
+  --proxy_port=1080
