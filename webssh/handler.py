@@ -467,10 +467,21 @@ class IndexHandler(MixinHandler, tornado.web.RequestHandler):
                     logging.info('Connected to %s via SOCKS5 proxy %s:%s', dst_addr, phost, pport)
                 except Exception as exc:
                     logging.warning('Failed to connect via SOCKS5 proxy: %s', exc)
+                    proxy_sock = None
 
         try:
             if proxy_sock is not None:
-                ssh.connect(*args, timeout=options.timeout, sock=proxy_sock)
+                try:
+                    ssh.connect(*args, timeout=options.timeout, sock=proxy_sock)
+                except (socket.timeout, socket.error, EOFError, paramiko.SSHException) as exc:
+                    # Proxy path failed, fallback to direct connection
+                    logging.warning('Proxy connection failed (%s), falling back to direct.', exc)
+                    try:
+                        proxy_sock.close()
+                    except Exception:
+                        pass
+                    proxy_sock = None
+                    ssh.connect(*args, timeout=options.timeout)
             else:
                 ssh.connect(*args, timeout=options.timeout)
         except socket.error:
