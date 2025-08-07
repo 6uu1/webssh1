@@ -10,5 +10,4 @@ sed "s|\${WARP_PRIVKEY}|${WARP_PRIVKEY}|g" \
 
 export ALL_PROXY="socks5h://127.0.0.1:1080"
 # 若 $PORT 为空，默认 8888
-PORT=${PORT:-8888}
-exec python run.py --port "$PORT" --address 0.0.0.0 --xheaders=False
+exec python run.py --port=${PORT:-8888} --address=0.0.0.0 --xheaders=False
