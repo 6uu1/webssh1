@@ -47,6 +47,14 @@ define('timeout', type=float, default=3, help='SSH connection timeout')
 define('delay', type=float, default=3, help='The delay to call recycle_worker')
 define('maxconn', type=int, default=20,
        help='Maximum live connections (ssh sessions) per client')
+# Proxy settings for outbound SSH connections (optional)
+define('proxy_type', default='', help='Proxy type (e.g., socks5)')
+define('proxy_host', default='', help='Proxy host')
+define('proxy_port', type=int, default=0, help='Proxy port')
+# Alternative names without underscores to tolerate different CLI spellings
+define('proxytype', default='', help='Proxy type (e.g., socks5)')
+define('proxyhost', default='', help='Proxy host')
+define('proxyport', type=int, default=0, help='Proxy port')
 define('font', default='', help='custom font filename')
 define('encoding', default='utf-8',
        help='''The default character encoding of ssh servers.
