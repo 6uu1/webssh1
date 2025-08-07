@@ -1,5 +1,5 @@
 paramiko
 tornado
 webssh
-wireproxy
+#wireproxy
 #envsubst
