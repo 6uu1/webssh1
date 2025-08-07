@@ -1,0 +1,9 @@
+{
+    "log_level": "info",
+    "bind_address": "127.0.0.1:1080",
+    "proxy_type": "socks",
+    "interface": {
+      "name": "wgcf",
+      "config": "./wgcf-profile.conf"
+    }
+  }
