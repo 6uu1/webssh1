@@ -18,9 +18,9 @@ if [ ! -x ./wireproxy ]; then
   ./fetch_wireproxy.sh
 fi
 
-# 启动 wireproxy（使用 JSON 配置以开启更详细的日志）
+# 启动 wireproxy（使用 INI 配置）
 echo ">> Starting wireproxy ..."
-./wireproxy -c wireproxy.json &
+./wireproxy -c wireproxy.conf &
 
 export ALL_PROXY="socks5h://127.0.0.1:1080"
 
