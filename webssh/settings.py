@@ -56,6 +56,8 @@ define('proxytype', default='', help='Proxy type (e.g., socks5)')
 define('proxyhost', default='', help='Proxy host')
 define('proxyport', type=int, default=0, help='Proxy port')
 define('font', default='', help='custom font filename')
+define('no_direct_fallback', type=bool, default=False,
+       help='Do not fall back to direct connection when proxy is configured')
 define('encoding', default='utf-8',
        help='''The default character encoding of ssh servers.
 Example: --encoding='utf-8' to solve the problem with some switches&routers''')

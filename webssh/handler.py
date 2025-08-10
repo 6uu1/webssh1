@@ -475,11 +475,14 @@ class IndexHandler(MixinHandler, tornado.web.RequestHandler):
                     ssh.connect(*args, timeout=options.timeout, sock=proxy_sock)
                 except (socket.timeout, socket.error, EOFError, paramiko.SSHException) as exc:
                     # If authentication failed via proxy, do NOT fall back to direct.
-                    # Surfacing the real error avoids misleading "Unable to connect" when IPv6 is unreachable directly.
                     if isinstance(exc, paramiko.AuthenticationException):
                         logging.warning('Authentication failed via proxy; not falling back to direct.')
                         raise
-                    # Other network/path errors may warrant a direct-connect fallback
+                    # Respect option to disable direct fallback entirely
+                    if getattr(options, 'no_direct_fallback', False):
+                        logging.warning('Proxy connection failed (%s); direct fallback disabled.', exc)
+                        raise
+                    # Otherwise, allow direct-connect fallback
                     logging.warning('Proxy connection failed (%s), falling back to direct.', exc)
                     try:
                         proxy_sock.close()
